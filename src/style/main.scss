@@ -1,15 +1,16 @@
 /*
 * Third Party
 */
+
 //@import "../../bower_components/normalize-css/normalize"; //don't need .css 
 //@import "../../bower_components/bootstrap/dist/css/bootstrap.min"; //don't need .css 
-
-
+@import "font-awesome.min";
 
 /*
 * Custom .scss
 */
-@import "partials/sprite";
-@import "partials/header";
-@import "partials/app";
-@import "partials/footer";
+
+@import "partials/_sprite.scss";
+@import "partials/app.scss";
+@import "partials/header.scss";
+
