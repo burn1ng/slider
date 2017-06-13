@@ -1,67 +1,73 @@
+.slider {
+    position: relative;
+    & a {
+        &:link, &:visited {
+            color: $opacityGrey;
+        }
+        &:hover, &:active {
+            color: $brown;
+        }
+    }
+}
+
 .slider__images {
     position: relative;
     overflow: hidden;
-    width: 940px;
-    height: 529px;
-    margin: 0 auto;
     &-wrap {
         font-size: 0;
-        height: 529px;
         white-space: nowrap;
         transition: margin .5s ease-out;
+        & img {
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+        }
     }
-}
-
-.slider__navigation {
-    width: 940px;
-    margin: 0 auto;
 }
 
 .slider__pager {
-    margin-top: 3px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
     text-decoration: none;
     &_previous {
-        float: left;
-        margin-right: 5px;
+        left: 5%;
     }
     &_next {
-        float: left;
-        margin-right: 5px;
+        right: 5%;
     }
-}
-
-.slider {
-    & a {
-        &:link, &:visited {
-            color: #333333;
-        }
-        &:hover, &:active {
-            color: #9e2020;
-        }
+    & i {
+        font-size: 40px;
     }
 }
 
 .slider__pagination {
-    float: right;
-    margin: 6px 0 0;
+    position: absolute;
+    margin: 0;
+    padding: 0;
+    bottom: 5%;
+    left: 50%;
+    transform: translateX(-50%);
     list-style: none;
     & li {
-        float: left;
-        margin: 0 1px;
-        & a {
+        display: inline-block;
+        vertical-align: middle;
+        margin: 0 4px;
+        & a {            
             display: block;
-            float: left;
-            overflow: hidden;
-            width: 13px;
-            height: 0;
-            padding-top: 13px;
-            background-image: url('../img/pagination.png');
-            background-position: 0 0;
+            width: 16px;
+            height: 16px;
+            border: 3px solid rgba(255,255,255,0.7);
+            border-radius: 50%;
+            background-color: transparent;
+            background-clip: content-box;
             &.active, &:hover.active {
-                background-position: 0 -13px;
+                border: white;
+                background-color: white;
             }
             &:hover {
-                background-position: 0 -26px;
+                border: $brown;
+                background-color: $brown;
             }
         }
     }

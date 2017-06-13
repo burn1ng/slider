@@ -2,7 +2,7 @@ $(document).ready(function() {
 
     new Slider('.slider', {
         direction: 'horizontal',
-        currentSlide: 1,
+        currentSlide: 0,
         changeInterval: 1500
     });
 
