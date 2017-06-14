@@ -11,13 +11,6 @@ $brown: #9e2020;
 $textColor: #283136;
 $opacityGrey: rgba(255, 255, 255, 0.7);
 
-/*$backgrey: #eee;
-$lightgrey: #f1f1f1;
-$text-color: #283136;
-$indicators-color: #c1c1c1;
-$color1: #fb565a;
-$color2: #00ca74;
-$color3: #efc84a;*/
 
 @font-face {
     font-family: 'RobotoMedium';
@@ -37,16 +30,23 @@ $color3: #efc84a;*/
     src: url('../fonts/RobotoThin.eot') format('embedded-opentype'), url('../fonts/RobotoThin.woff2') format('woff2'), url('../fonts/RobotoThin.woff') format('woff'), url('../fonts/RobotoThin.ttf') format('truetype'), url('../fonts/RobotoThin.svg#RobotoThin') format('svg');
 }
 
-
 * {
     box-sizing: border-box;
 }
+
 body {
     font: normal 15px/1.5 $light, sans-serif;
     color: $textColor;
     padding: 0;
     margin: 0;
     -webkit-font-smoothing: antialiased;
+}
+
+.no-select {
+    -webkit-user-select: none; /* Chrome, Opera, Safari */
+    -moz-user-select: none; /* Firefox 2+ */
+    -ms-user-select: none; /* IE 10+ */
+    user-select: none; /* Standard syntax */
 }
 
 input:focus, a:focus, textarea:focus, select:focus {
