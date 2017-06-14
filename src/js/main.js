@@ -5,7 +5,6 @@
 //= ../../bower_components/jquery/dist/jquery.js
 //= hammer.js
 
-//jquery.hammer.js
 
 /*
  * Custom

@@ -12,11 +12,11 @@ $(document).ready(function() {
 
     hammer.add(swipe);
     hammer.on('swipeleft', function() {
-        topSlider.swipeRight();
+        topSlider.swipeLeft();
     });
 
     hammer.on('swiperight', function() {
-        topSlider.swipeLeft();
+        topSlider.swipeRight();
     });
 
 });

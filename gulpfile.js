@@ -99,7 +99,7 @@ gulp.task('js:build', function() {
 gulp.task('style:build', function() {
     gulp.src(path.src.style) // get only main.scss (all scss files included from partials there)
         .pipe(sass.sync().on('error', sass.logError)) //compile sass to css, log the errors without falling down
-        .pipe(prefixer(autoPrefixerOptions)) //add prefixes
+        .pipe(prefixer(autoPrefixerOptions)) //add vendor-prefixes
         //.pipe(cssnano()) // minify
         .pipe(gulp.dest(path.build.css))
         .pipe(reload({ stream: true }));

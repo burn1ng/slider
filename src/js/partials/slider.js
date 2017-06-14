@@ -30,12 +30,12 @@ function Slider(selector, options) {
     };
 
     this.swipeLeft = function () {
-        __self.prevSlide();
+        __self.nextSlide();
         __self.__render();
     }
 
     this.swipeRight = function () {
-        __self.nextSlide();
+        __self.prevSlide();
         __self.__render();
     }
 
