@@ -5,8 +5,7 @@
 //= ../../bower_components/jquery/dist/jquery.js
 //= hammer.js
 
-//jquery.hammer.js not needed
-
+//jquery.hammer.js
 
 /*
  * Custom

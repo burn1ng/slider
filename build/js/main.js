@@ -12899,8 +12899,7 @@ if (typeof define === 'function' && define.amd) {
 
 })(window, document, 'Hammer');
 
-//jquery.hammer.js not needed
-
+//jquery.hammer.js
 
 /*
  * Custom
@@ -12936,6 +12935,18 @@ function Slider(selector, options) {
         }
         currentSlideIndex++;
     };
+
+    this.swipeLeft = function (e) {
+        e.preventDefault();
+        __self.prevSlide();
+        __self.__render();
+    }
+
+    this.swipeRight = function (e) {
+        e.preventDefault();
+        __self.nextSlide();
+        __self.__render();
+    }
 
     this.__render = function () {
         var directionStyle = (options.direction === 'vertical') ? 'marginTop' : 'marginLeft';
@@ -13012,13 +13023,14 @@ $(document).ready(function() {
     // $("#topSlider1").hammer().bind("swipeleft", topSlider.prevSlide);
     // $("#topSlider1").hammer().bind("swiperight", topSlider.nextSlide);
 
-    var topSliderNode = document.getElementById('#topSlider1');
-    var mc = new Hammer(topSliderNode);
-    mc.on("swipeleft", function(ev) {
-        topSlider.prevSlide();
+    var elem = document.getElementById("topSlider1");
+
+    var mc = new Hammer(elem);
+    mc.on("swipeleft", function() {
+        topSlider.swipeLeft();
     });
-    mc.on("swiperight", function(ev) {
-        topSlider.nextSlide();
+    mc.on("swiperight", function() {
+        topSlider.swipeRight();
     });
 
     // Hammer(topSlider).on("swipeleft", function() {

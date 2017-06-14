@@ -29,6 +29,18 @@ function Slider(selector, options) {
         currentSlideIndex++;
     };
 
+    this.swipeLeft = function (e) {
+        e.preventDefault();
+        __self.prevSlide();
+        __self.__render();
+    }
+
+    this.swipeRight = function (e) {
+        e.preventDefault();
+        __self.nextSlide();
+        __self.__render();
+    }
+
     this.__render = function () {
         var directionStyle = (options.direction === 'vertical') ? 'marginTop' : 'marginLeft';
 
