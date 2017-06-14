@@ -29,14 +29,12 @@ function Slider(selector, options) {
         currentSlideIndex++;
     };
 
-    this.swipeLeft = function (e) {
-        e.preventDefault();
+    this.swipeLeft = function () {
         __self.prevSlide();
         __self.__render();
     }
 
-    this.swipeRight = function (e) {
-        e.preventDefault();
+    this.swipeRight = function () {
         __self.nextSlide();
         __self.__render();
     }

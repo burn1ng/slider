@@ -6,25 +6,17 @@ $(document).ready(function() {
         changeInterval: 1500
     });
 
-    // $("#topSlider1").hammer().bind("swipeleft", topSlider.prevSlide);
-    // $("#topSlider1").hammer().bind("swiperight", topSlider.nextSlide);
+    var topSliderNode = document.getElementById("topSlider1");
+    var hammer = new Hammer.Manager(topSliderNode);
+    var swipe = new Hammer.Swipe();
 
-    var elem = document.getElementById("topSlider1");
-
-    var mc = new Hammer(elem);
-    mc.on("swipeleft", function() {
-        topSlider.swipeLeft();
-    });
-    mc.on("swiperight", function() {
+    hammer.add(swipe);
+    hammer.on('swipeleft', function() {
         topSlider.swipeRight();
     });
 
-    // Hammer(topSlider).on("swipeleft", function() {
-    //     topSlider.prevSlide();
-    // });
-
-    // Hammer(topSlider).on("swiperight", function() {
-    //     topSlider.nextSlide();
-    // });
+    hammer.on('swiperight', function() {
+        topSlider.swipeLeft();
+    });
 
 });
