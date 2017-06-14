@@ -11,7 +11,6 @@ webpush.setVapidDetails(
     vapidKeys.privateKey
 );
 
-
 var outputJson = JSON.stringify(vapidKeys, null, "\t");
 
 fs.writeFile("output.json", outputJson, function(err) {
@@ -20,18 +19,4 @@ fs.writeFile("output.json", outputJson, function(err) {
     }
 
     console.log("The file was saved!");
-}); 
-
-
-
-
-// This is the same output of calling JSON.stringify on a PushSubscription 
-// const pushSubscription = {
-//   endpoint: '.....',
-//   keys: {
-//     auth: '.....',
-//     p256dh: '.....'
-//   }
-// };
-
-// webpush.sendNotification(pushSubscription, 'Your Push Payload Text');
+});

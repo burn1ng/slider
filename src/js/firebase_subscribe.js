@@ -3,17 +3,21 @@ firebase.initializeApp({
 });
 
 // check browser, if any support of notifications
-if ('Notification' in window) {
+if('Notification' in window) {
     var messaging = firebase.messaging();
 
     // user have already accept receiving of notifications,
     // subscribe user for notifications
-    if (Notification.permission === 'granted') {
+    if(Notification.permission === 'granted') {
         subscribe();
     }
 
     // ask for permission and subscribe user by onClick on subscribe-button
-    $('#subscribe').on('click', function () {
+    // $('#subscribe').on('click', function() {
+    //     subscribe();
+    // });
+
+    $(document).ready(function() {
         subscribe();
     });
 }
@@ -21,37 +25,46 @@ if ('Notification' in window) {
 function subscribe() {
     // ask for permission
     messaging.requestPermission()
-        .then(function () {
+        .then(function() {
             // get ID of device
             messaging.getToken()
-                .then(function (currentToken) {
+                .then(function(currentToken) {
                     console.log(currentToken);
 
-                    if (currentToken) {
+                    if(currentToken) {
                         sendTokenToServer(currentToken);
                     } else {
                         console.warn('Не удалось получить токен.');
                         setTokenSentToServer(false);
                     }
                 })
-                .catch(function (err) {
+                .catch(function(err) {
                     console.warn('При получении токена произошла ошибка.', err);
                     setTokenSentToServer(false);
                 });
-    })
-    .catch(function (err) {
-        console.warn('Не удалось получить разрешение на показ уведомлений.', err);
-    });
+        })
+        .catch(function(err) {
+            console.warn('Не удалось получить разрешение на показ уведомлений.', err);
+        });
 }
 
 // send ID of device to server
 function sendTokenToServer(currentToken) {
-    if (!isTokenSentToServer(currentToken)) {
+    if(!isTokenSentToServer(currentToken)) {
         console.log('Отправка токена на сервер...');
 
-        var url = ''; // url of script, which save ID of device
-        $.post(url, {
-            token: currentToken
+        //var url = ''; // url of script, which save ID of device
+        // $.post(url, {
+        //     token: currentToken
+        // });
+        $.ajax({
+            type: 'POST',
+            url: 'http://localhost:3005/',
+            data: { token: currentToken },
+            success: function(response) {
+                console.log('Post request was successfull to  my server!! ' + JSON.stringify(response));
+            },
+            dataType: 'json'
         });
 
         setTokenSentToServer(currentToken);

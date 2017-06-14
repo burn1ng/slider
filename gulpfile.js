@@ -24,7 +24,8 @@ var path = {
         css: 'build/css/',
         img: 'build/img/',
         icons: 'build/img/',
-        fonts: 'build/fonts/'
+        fonts: 'build/fonts/',
+        sw: 'build/'
     },
     src: { // source folders of all files
         html: 'src/*.html',
@@ -32,7 +33,8 @@ var path = {
         style: 'src/style/main.scss', // we use only 1 file to control sequence of all styles in main.scss
         img: 'src/img/**/*.*',
         icons: 'src/icons/**.*',
-        fonts: 'src/fonts/**/*.*'
+        fonts: 'src/fonts/**/*.*',
+        sw: 'src/firebase-messaging-sw.js'
     },
     watch: { // where are we should watch for changings
         html: 'src/**/*.html',
@@ -40,7 +42,8 @@ var path = {
         style: 'src/style/**/*.*', //watch for added css or sass files both
         img: 'src/img/**/*.*',
         icons: 'src/icons/**/*.*',
-        fonts: 'src/fonts/**/*.*'
+        fonts: 'src/fonts/**/*.*',
+        sw: 'src/firebase-messaging-sw.js'
     },
     clean: './build'
 };
@@ -51,9 +54,10 @@ var browserSyncOptions = {
     server: {
         baseDir: "./build"
     },
-    tunnel: true,
-    host: 'localhost',
-    port: 3001,
+    tunnel: false,
+    // host: 'localhost',
+    // port: 3001,
+    cors: true,
     logPrefix: "Browser-sync"
 };
 var autoPrefixerOptions = {
@@ -114,6 +118,10 @@ gulp.task('fonts:build', function() {
     gulp.src(path.src.fonts)
         .pipe(gulp.dest(path.build.fonts)) // simple copy
 });
+gulp.task('sw:build', function() {
+    gulp.src(path.src.sw)
+        .pipe(gulp.dest(path.build.sw)) // simple copy
+});
 gulp.task('sprite:generate', function() {
     var spriteData = gulp.src(path.src.icons)
         .pipe(spritesmith(spriteOptions)); // Generate our spritesheet 
@@ -131,7 +139,7 @@ gulp.task('clean', function(cb) {
 gulp.task('build', function(cb) {
     runSequence('clean', //clean build folder !!!first
         'sprite:generate', //generate sprite-image and sass-code for icons !!!second
-    ['image:build', 'html:build', 'js:build', 'style:build', 'fonts:build'], //simultaneously
+    ['image:build', 'html:build', 'js:build', 'style:build', 'fonts:build', 'sw:build'], //simultaneously
         cb);
 });
 
@@ -155,6 +163,9 @@ gulp.task('watch', function() {
     });
     watch([path.watch.fonts], function(event, cb) {
         gulp.start('fonts:build');
+    });
+    watch([path.watch.sw], function(event, cb) {
+        gulp.start('sw:build');
     });
 });
 
