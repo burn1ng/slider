@@ -7,7 +7,7 @@ self.addEventListener('push', function(event) {
         body: '( ͡° ͜ʖ ͡°) Hi, my web-push messages works!',
         icon: 'img/sw-icon-192x192.png',
         badge: 'img/sw-badge-192x192.png',
-        //image: 'img/sw-image-1350x.jpg',
+        //image: '../img/sw-image-1350x.jpg',
         vibrate: [500, 110, 500, 110, 450, 110, 200, 110, 170, 40, 450, 110, 200, 110, 170, 40, 500],
         actions: [
             {
