@@ -10,89 +10,91 @@ function Slider(selector, options) {
         paginationNode = sliderNode.querySelector('.slider__pagination');
 
     var currentSlideIndex = options.currentSlide || 0,
-        imagesCount = sliderImagesNode.children.length,        
+        imagesCount = sliderImagesNode.children.length,
         slideSize = sliderImagesNode[(options.direction === 'vertical') ? 'offsetHeight' : 'offsetWidth'];
 
-    this.prevSlide = function () {
-        if (currentSlideIndex === 0) {
+    this.prevSlide = function() {
+        if(currentSlideIndex === 0) {
             currentSlideIndex = imagesCount - 1;
             return;
         }
         currentSlideIndex--;
     };
 
-    this.nextSlide = function () {
-        if (currentSlideIndex === imagesCount - 1) {
+    this.nextSlide = function() {
+        if(currentSlideIndex === imagesCount - 1) {
             currentSlideIndex = 0;
             return;
         }
         currentSlideIndex++;
     };
 
-    this.swipeLeft = function () {
+    this.swipeLeft = function() {
         __self.nextSlide();
         __self.__render();
     }
 
-    this.swipeRight = function () {
+    this.swipeRight = function() {
         __self.prevSlide();
         __self.__render();
     }
 
-    this.__render = function () {
+    this.__render = function() {
         var directionStyle = (options.direction === 'vertical') ? 'marginTop' : 'marginLeft';
 
         sliderImagesNode.style[directionStyle] = -(currentSlideIndex * slideSize) + 'px';
-        
+
         if(paginationNode.querySelector('.active') !== null) {
             paginationNode.querySelector('.active').classList.remove('active');
         }
         paginationNode.children[currentSlideIndex].querySelector('a').classList.add('active');
     };
 
-    prevSliderNode.onclick = function(e) {
+    prevSliderNode.addEventListener("click", function(e) {
         e.preventDefault();
         __self.prevSlide();
         __self.__render();
-    };
+    });
 
-    nextSliderNode.onclick = function(e) {
+    nextSliderNode.addEventListener("click", function(e) {
         e.preventDefault();
         __self.nextSlide();
         __self.__render();
-    };
+    });
 
-    paginationNode.onclick = function(e) {
+    paginationNode.addEventListener("click", function(e) {
         e.preventDefault();
 
         var link = e.target;
 
-        if (link.tagName !== 'A') { return; }
+        if(link.tagName !== 'A') {
+            return;
+        }
 
         currentSlideIndex = +link.dataset['slider__item'];
 
         __self.__render();
-    };
+    });
 
     this.__createPaginationItems = function() {
-    	var template = paginationNode.querySelector('.slider__pagination-item_tmpl');    	
+        var template = paginationNode.querySelector('.slider__pagination-item_tmpl');
 
-    	var fragment = document.createDocumentFragment();    	
+        var fragment = document.createDocumentFragment();
 
-    	for(let i = 0; i < imagesCount; i++) {
-    		var pageItemClone = template.cloneNode(true);    		
-    		pageItemClone.classList.remove('slider__pagination-item_tmpl');
-    		//pageItemClone.querySelector('a').textContent = i;
-    		pageItemClone.querySelector('a').dataset['slider__item'] = i;
-    		fragment.appendChild(pageItemClone);
-    	}
-    	paginationNode.appendChild(fragment);    	
+        for(let i = 0; i < imagesCount; i++) {
+            var pageItemClone = template.cloneNode(true);
+            pageItemClone.classList.remove('slider__pagination-item_tmpl');
+            //pageItemClone.querySelector('a').textContent = i;
+            pageItemClone.querySelector('a').dataset['slider__item'] = i;
+            fragment.appendChild(pageItemClone);
+        }
+        paginationNode.appendChild(fragment);
 
         template.remove();
     }
 
-    this.__init = function () {
-        if (options.direction === 'vertical') {
+    this.__init = function() {
+        if(options.direction === 'vertical') {
             sliderImagesNode.style.whiteSpace = 'normal';
         }
 

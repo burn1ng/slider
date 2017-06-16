@@ -25,7 +25,7 @@ var path = {
         img: 'build/img/',
         icons: 'build/img/',
         fonts: 'build/fonts/',
-        sw: 'build/'
+        sw: 'build/js'
     },
     src: { // source folders of all files
         html: 'src/*.html',
@@ -34,7 +34,7 @@ var path = {
         img: 'src/img/**/*.*',
         icons: 'src/icons/**.*',
         fonts: 'src/fonts/**/*.*',
-        sw: 'src/firebase-messaging-sw.js'
+        sw: 'src/js/web-push-sw.js'
     },
     watch: { // where are we should watch for changings
         html: 'src/**/*.html',
@@ -43,7 +43,7 @@ var path = {
         img: 'src/img/**/*.*',
         icons: 'src/icons/**/*.*',
         fonts: 'src/fonts/**/*.*',
-        sw: 'src/firebase-messaging-sw.js'
+        sw: 'src/js/web-push-sw.js'
     },
     clean: './build'
 };
@@ -55,8 +55,9 @@ var browserSyncOptions = {
         baseDir: "./build"
     },
     tunnel: false,
-    // host: 'localhost',
-    // port: 3001,
+    host: 'localhost',
+    port: 3002,
+
     cors: true,
     logPrefix: "Browser-sync"
 };
@@ -96,7 +97,7 @@ gulp.task('html:build', function() {
 gulp.task('js:build', function() {
     gulp.src(path.src.js) //get only main.js
         .pipe(rigger())
-        .pipe(minify()) // minify with "gulp-minify": "^1.0.0"
+        //.pipe(minify()) // minify with "gulp-minify": "^1.0.0"
         .pipe(gulp.dest(path.build.js))
         .pipe(reload({ stream: true }));
 });
@@ -104,7 +105,7 @@ gulp.task('style:build', function() {
     gulp.src(path.src.style) // get only main.scss (all scss files included from partials there)
         .pipe(sass.sync().on('error', sass.logError)) //compile sass to css, log the errors without falling down
         .pipe(prefixer(autoPrefixerOptions)) //add vendor-prefixes
-        .pipe(cssnano()) // minify
+        //.pipe(cssnano()) // minify
         .pipe(gulp.dest(path.build.css))
         .pipe(reload({ stream: true }));
 });

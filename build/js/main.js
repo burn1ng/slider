@@ -12898,97 +12898,197 @@ if (typeof define === 'function' && define.amd) {
 }
 
 })(window, document, 'Hammer');
-firebase.initializeApp({
-    messagingSenderId: '382954170103'
-});
-
-// check browser, if any support of notifications
-if('Notification' in window) {
-    var messaging = firebase.messaging();
-
-    // user have already accept receiving of notifications,
-    // subscribe user for notifications
-    if(Notification.permission === 'granted') {
-        subscribe();
-    }
-
-    // ask for permission and subscribe user by onClick on subscribe-button
-    // $('#subscribe').on('click', function() {
-    //     subscribe();
-    // });
-
-    $(document).ready(function() {
-        subscribe();
-    });
-}
-
-function subscribe() {
-    // ask for permission
-    messaging.requestPermission()
-        .then(function() {
-            // get ID of device
-            messaging.getToken()
-                .then(function(currentToken) {
-                    console.log(currentToken);
-
-                    if(currentToken) {
-                        sendTokenToServer(currentToken);
-                    } else {
-                        console.warn('Не удалось получить токен.');
-                        setTokenSentToServer(false);
-                    }
-                })
-                .catch(function(err) {
-                    console.warn('При получении токена произошла ошибка.', err);
-                    setTokenSentToServer(false);
-                });
-        })
-        .catch(function(err) {
-            console.warn('Не удалось получить разрешение на показ уведомлений.', err);
-        });
-}
-
-// send ID of device to server
-function sendTokenToServer(currentToken) {
-    if(!isTokenSentToServer(currentToken)) {
-        console.log('Отправка токена на сервер...');
-
-        //var url = ''; // url of script, which save ID of device
-        // $.post(url, {
-        //     token: currentToken
-        // });
-        $.ajax({
-            type: 'POST',
-            url: 'http://localhost:3005/',
-            data: { token: currentToken },
-            success: function(response) {
-                console.log('Post request was successfull to  my server!! ' + JSON.stringify(response));
-            },
-            dataType: 'json'
-        });
-
-        setTokenSentToServer(currentToken);
-    } else {
-        console.log('Токен уже отправлен на сервер.');
-    }
-}
-
-// use localStorage for subscribe-check of current user
-function isTokenSentToServer(currentToken) {
-    return window.localStorage.getItem('sentFirebaseMessagingToken') == currentToken;
-}
-
-function setTokenSentToServer(currentToken) {
-    window.localStorage.setItem(
-        'sentFirebaseMessagingToken',
-        currentToken ? currentToken : ''
-    );
-}
 
 /*
  * Custom
  */
+'use strict';
 
+const applicationServerPublicKey = 'BALLYbaDd_lLNS2yzsZXIGGlDRzUU0tnjfrfRIxXS7S_pXTrK8d9Y2Hn5oKAOOFshn5lLwOYHroR0gnczAo64fU';
+var pushButton = document.getElementById("pushButton");
+
+let isSubscribed = false;
+let swRegistration = null;
+
+function Base64EncodeUrl(str) {
+    return str.replace(/\+/g, '-').replace(/\//g, '_').replace(/\=+$/, '');
+}
+
+function urlB64ToUint8Array(base64String) {
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding)
+        .replace(/\-/g, '+')
+        .replace(/_/g, '/');
+
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+
+    for(let i = 0; i < rawData.length; ++i) {
+        outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
+}
+
+if('serviceWorker' in navigator && 'PushManager' in window) {
+    console.log('Service Worker and Push is supported');
+
+    navigator.serviceWorker.register('js/web-push-sw.js')
+        .then(function(swReg) {
+            console.log('Service Worker is registered', swReg);
+
+            swRegistration = swReg;
+            initialiseUI();
+        })
+        .catch(function(error) {
+            console.error('Service Worker Error', error);
+        });
+} else {
+    console.warn('Push messaging is not supported');
+    pushButton.remove(); //remove button if push is not supported in browser
+}
+
+function initialiseUI() {
+    pushButton.addEventListener('click', function() {
+        pushButton.disabled = true;
+        if(isSubscribed) {
+            unsubscribeUser();
+        } else {
+            subscribeUser();
+        }
+    });
+    // Set the initial subscription value
+    swRegistration.pushManager.getSubscription()
+        .then(function(subscription) {
+            isSubscribed = !(subscription === null);
+
+            if(isSubscribed) {
+                console.log('User IS subscribed.');
+            } else {
+                console.log('User is NOT subscribed.');
+            }
+
+            updateBtn();
+
+        });
+}
+
+function updateBtn() {
+    if(isSubscribed) {
+        pushButton.textContent = 'Disable Push Messaging';
+    } else {
+        pushButton.textContent = 'Enable Push Messaging';
+    }
+
+    pushButton.disabled = false;
+}
+
+function subscribeUser() {
+    const applicationServerKey = urlB64ToUint8Array(applicationServerPublicKey);
+    swRegistration.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: applicationServerKey
+        })
+        .then(function(subscription) {
+            console.log('User is subscribed.');
+
+            updateSubscriptionOnServer(subscription);
+
+            isSubscribed = true;
+
+            updateBtn();
+        })
+        .catch(function(err) {
+            console.log('Failed to subscribe the user: ', err);
+            updateBtn();
+        });
+}
+
+function updateSubscriptionOnServer(subscription) {
+    // TODO: Send subscription to application server
+
+    if(subscription) {
+        // var subscriptionJson = document.querySelector('.js-subscription-json');
+        // var subscriptionDetails = document.querySelector('.js-subscription-details');
+
+        // var endpointNode = document.getElementById('endpoint');
+        // var keyNode = document.getElementById('p256dh');
+        // var authNode = document.getElementById('auth');
+
+        // subscriptionJson.textContent = JSON.stringify(subscription);
+        // endpointNode.textContent = subscription.endpoint;
+
+        // // i'm checking, if subscription.getKey works in browser. 
+        // var rawKey = subscription.getKey ? subscription.getKey('p256dh') : '';
+        // var key = rawKey ? Base64EncodeUrl(btoa(String.fromCharCode.apply(null, new Uint8Array(rawKey)))) : '';
+
+        // var rawAuthSecret = subscription.getKey ? subscription.getKey('auth') : '';
+        // var authSecret = rawAuthSecret ? Base64EncodeUrl(btoa(String.fromCharCode.apply(null, new Uint8Array(rawAuthSecret)))) : '';
+        // keyNode.textContent = key;
+        // authNode.textContent = authSecret;
+
+        // console.log("key: " + key);
+        // console.log("authSecret: " + authSecret);
+        // console.log('endpoint:', subscription.endpoint);
+
+        // subscriptionJson.classList.remove('is-invisible');
+        // subscriptionDetails.classList.remove('is-invisible');
+    } else {
+        // subscriptionJson.classList.add('is-invisible');
+        // subscriptionDetails.classList.add('is-invisible');
+    }
+}
+
+function unsubscribeUser() {
+    swRegistration.pushManager.getSubscription()
+        .then(function(subscription) {
+            if(subscription) {
+                // TODO: Tell application server to delete subscription
+                return subscription.unsubscribe();
+            }
+        })
+        .catch(function(error) {
+            console.log('Error unsubscribing', error);
+        })
+        .then(function() {
+            updateSubscriptionOnServer(null);
+
+            console.log('User is unsubscribed.');
+            isSubscribed = false;
+
+            updateBtn();
+        });
+}
+
+const title1 = 'The big hello to unitedTeam!';
+const options1 = {
+    body: '( ͡° ͜ʖ ͡°) Hi, my web-push messages works!',
+    icon: '../img/sw-icon-192x192.png',
+    badge: '../img/sw-badge-192x192.png',
+    vibrate: [500, 110, 500, 110, 450, 110, 200, 110, 170, 40, 450, 110, 200, 110, 170, 40, 500],
+    actions: [
+        {
+            action: 'email',
+            title: 'Get in touch',
+            icon: '../img/envelope.png'
+            },
+        {
+            action: 'linkedIn',
+            title: 'Look at linkedIn',
+            icon: '../img/linkedin.png'
+            }
+        ]
+
+};
+
+var target = document.querySelectorAll('.slider__pager, .slider__pagination');
+
+for(var i = 0; i < target.length; i++) {
+    target[i].addEventListener('click', function(event) {
+        if(isSubscribed) {
+            swRegistration.showNotification(title1, options1);
+        }
+    });
+}
 function Slider(selector, options) {
 
     var __self = this;
@@ -13001,89 +13101,91 @@ function Slider(selector, options) {
         paginationNode = sliderNode.querySelector('.slider__pagination');
 
     var currentSlideIndex = options.currentSlide || 0,
-        imagesCount = sliderImagesNode.children.length,        
+        imagesCount = sliderImagesNode.children.length,
         slideSize = sliderImagesNode[(options.direction === 'vertical') ? 'offsetHeight' : 'offsetWidth'];
 
-    this.prevSlide = function () {
-        if (currentSlideIndex === 0) {
+    this.prevSlide = function() {
+        if(currentSlideIndex === 0) {
             currentSlideIndex = imagesCount - 1;
             return;
         }
         currentSlideIndex--;
     };
 
-    this.nextSlide = function () {
-        if (currentSlideIndex === imagesCount - 1) {
+    this.nextSlide = function() {
+        if(currentSlideIndex === imagesCount - 1) {
             currentSlideIndex = 0;
             return;
         }
         currentSlideIndex++;
     };
 
-    this.swipeLeft = function () {
+    this.swipeLeft = function() {
         __self.nextSlide();
         __self.__render();
     }
 
-    this.swipeRight = function () {
+    this.swipeRight = function() {
         __self.prevSlide();
         __self.__render();
     }
 
-    this.__render = function () {
+    this.__render = function() {
         var directionStyle = (options.direction === 'vertical') ? 'marginTop' : 'marginLeft';
 
         sliderImagesNode.style[directionStyle] = -(currentSlideIndex * slideSize) + 'px';
-        
+
         if(paginationNode.querySelector('.active') !== null) {
             paginationNode.querySelector('.active').classList.remove('active');
         }
         paginationNode.children[currentSlideIndex].querySelector('a').classList.add('active');
     };
 
-    prevSliderNode.onclick = function(e) {
+    prevSliderNode.addEventListener("click", function(e) {
         e.preventDefault();
         __self.prevSlide();
         __self.__render();
-    };
+    });
 
-    nextSliderNode.onclick = function(e) {
+    nextSliderNode.addEventListener("click", function(e) {
         e.preventDefault();
         __self.nextSlide();
         __self.__render();
-    };
+    });
 
-    paginationNode.onclick = function(e) {
+    paginationNode.addEventListener("click", function(e) {
         e.preventDefault();
 
         var link = e.target;
 
-        if (link.tagName !== 'A') { return; }
+        if(link.tagName !== 'A') {
+            return;
+        }
 
         currentSlideIndex = +link.dataset['slider__item'];
 
         __self.__render();
-    };
+    });
 
     this.__createPaginationItems = function() {
-    	var template = paginationNode.querySelector('.slider__pagination-item_tmpl');    	
+        var template = paginationNode.querySelector('.slider__pagination-item_tmpl');
 
-    	var fragment = document.createDocumentFragment();    	
+        var fragment = document.createDocumentFragment();
 
-    	for(let i = 0; i < imagesCount; i++) {
-    		var pageItemClone = template.cloneNode(true);    		
-    		pageItemClone.classList.remove('slider__pagination-item_tmpl');
-    		//pageItemClone.querySelector('a').textContent = i;
-    		pageItemClone.querySelector('a').dataset['slider__item'] = i;
-    		fragment.appendChild(pageItemClone);
-    	}
-    	paginationNode.appendChild(fragment);    	
+        for(let i = 0; i < imagesCount; i++) {
+            var pageItemClone = template.cloneNode(true);
+            pageItemClone.classList.remove('slider__pagination-item_tmpl');
+            //pageItemClone.querySelector('a').textContent = i;
+            pageItemClone.querySelector('a').dataset['slider__item'] = i;
+            fragment.appendChild(pageItemClone);
+        }
+        paginationNode.appendChild(fragment);
 
         template.remove();
     }
 
-    this.__init = function () {
-        if (options.direction === 'vertical') {
+    this.__init = function() {
+        if(options.direction === 'vertical') {
             sliderImagesNode.style.whiteSpace = 'normal';
         }
 

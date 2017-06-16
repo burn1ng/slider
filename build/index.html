@@ -6,7 +6,8 @@
   <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
   <title>Slider with notifications</title>
   <link rel="stylesheet" type="text/css" href="css/main.css">
-  <script type="text/javascript" src="https://www.gstatic.com/firebasejs/4.1.2/firebase.js"></script>
+  <script type="text/javascript" src="js/web-push-sw.js"></script>
+  <!--   <script type="text/javascript" src="https://www.gstatic.com/firebasejs/4.1.2/firebase.js"></script> -->
 
 </head>
 
@@ -34,8 +35,24 @@
       </li>
     </ul>
   </div>
+  <button class="pushButton no-select" id="pushButton"></button>
+  <div class="js-subscription-json is-invisible">here the output from server</div>
+  <div class="js-subscription-details is-invisible">
+    <div>Endpoint:
+      <br>
+      <span id="endpoint"></span>
+    </div>
+    <div>Keys:
+      <br>p 256dh:
+      <br>
+      <span id="p256dh"></span>
+      <br> auth:
+      <br>
+      <span id="auth"></span>
+    </div>
+  </div>
 
-  <script type="text/javascript" src="js/main-min.js"></script>
+  <script type="text/javascript" src="js/main.js"></script>
 </body>
 
 </html>
