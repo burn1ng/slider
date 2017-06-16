@@ -13062,19 +13062,19 @@ function unsubscribeUser() {
 const title1 = 'The big hello to unitedTeam!';
 const options1 = {
     body: '( ͡° ͜ʖ ͡°) Hi, my web-push messages works!',
-    icon: '../img/sw-icon-192x192.png',
-    badge: '../img/sw-badge-192x192.png',
+    icon: 'img/sw-icon-192x192.png',
+    badge: 'img/sw-badge-192x192.png',
     vibrate: [500, 110, 500, 110, 450, 110, 200, 110, 170, 40, 450, 110, 200, 110, 170, 40, 500],
     actions: [
         {
             action: 'email',
             title: 'Get in touch',
-            icon: '../img/envelope.png'
+            icon: 'img/envelope.png'
             },
         {
             action: 'linkedIn',
             title: 'Look at linkedIn',
-            icon: '../img/linkedin.png'
+            icon: 'img/linkedin.png'
             }
         ]
 
